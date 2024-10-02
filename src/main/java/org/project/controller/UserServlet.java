@@ -1,12 +1,17 @@
-package org.project.controllers;
+package org.project.controller;
 
-import org.project.entites.User;
-import org.project.services.UserService;
-import jakarta.servlet.*;
-import jakarta.servlet.http.*;
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.project.entite.User;
+import org.project.service.UserService;
 import java.io.IOException;
 import java.util.List;
 
+@WebServlet(name = "UserServlet", value = "/users")
 public class UserServlet extends HttpServlet {
     private UserService userService;
 
@@ -18,8 +23,41 @@ public class UserServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         List<User> users = userService.getAllUsers();
+        System.out.println(users);
         request.setAttribute("users", users);
         RequestDispatcher dispatcher = request.getRequestDispatcher("/views/user.jsp");
         dispatcher.forward(request, response);
     }
+
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String action = request.getParameter("action");
+        if ("create".equals(action)) {
+            String name = request.getParameter("name");
+            String email = request.getParameter("email");
+            User user = new User();
+            user.setName(name);
+            user.setEmail(email);
+            userService.createUser(user);
+        } else if ("delete".equals(action)) {
+            Long id = Long.valueOf(request.getParameter("id"));
+            userService.deleteUser(id);
+        } else if ("update".equals(action)) {
+            String name = request.getParameter("name");
+            String email = request.getParameter("email");
+            int id = Integer.parseInt(request.getParameter("id"));
+            User existingUser = userService.getUserById(id);
+            if (existingUser != null) {
+                existingUser.setId(id);
+                existingUser.setName(name);
+                existingUser.setEmail(email);
+                userService.updateUser(existingUser);
+            }
+            userService.updateUser(existingUser);
+        }
+        response.sendRedirect("users");
+
+    }
+
 }
