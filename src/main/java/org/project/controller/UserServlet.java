@@ -22,11 +22,24 @@ public class UserServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        List<User> users = userService.getAllUsers();
-        System.out.println(users);
-        request.setAttribute("users", users);
-        RequestDispatcher dispatcher = request.getRequestDispatcher("/views/user.jsp");
-        dispatcher.forward(request, response);
+        String idP = request.getParameter("id");
+        if (idP != null){
+            int id = Integer.parseInt(idP);
+            User user = userService.getUserById(id);
+            if (user != null) {
+                request.setAttribute("user", user);
+                RequestDispatcher dispatcher = request.getRequestDispatcher("/views/editUser.jsp");
+                dispatcher.forward(request, response);
+            } else {
+                response.sendRedirect("users");
+            }
+        }else {
+            List<User> users = userService.getAllUsers();
+            System.out.println(users);
+            request.setAttribute("users", users);
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/views/user.jsp");
+            dispatcher.forward(request, response);
+        }
     }
 
 
