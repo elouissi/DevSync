@@ -12,12 +12,13 @@ import org.project.service.UserService;
 
 import java.io.IOException;
 
-@WebServlet( name = "loginUser",value = "/loginUser")
+@WebServlet(name = "loginUser", value = "/loginUser")
 public class LoginServlet extends HttpServlet {
 
-    UserService userService = new UserService();
+    private UserService userService = new UserService();
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, IOException, ServletException {
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         String userId = request.getParameter("userId");
 
         User user = userService.getUserById(Integer.parseInt(userId));
@@ -25,8 +26,7 @@ public class LoginServlet extends HttpServlet {
         if (user != null) {
             HttpSession session = request.getSession();
             session.setAttribute("currentUser", user);
-            RequestDispatcher disp = request.getRequestDispatcher("/views/task.jsp");
-            disp.forward(request,response);
+            response.sendRedirect("tasks");
         } else {
             response.sendRedirect("error.jsp");
         }

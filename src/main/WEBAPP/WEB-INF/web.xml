@@ -30,4 +30,12 @@
         <url-pattern>/logoutUser</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>TaskServlet</servlet-name>
+        <servlet-class>org.project.controller.TaskServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>TaskServlet</servlet-name>
+        <url-pattern>/tasks</url-pattern>
+    </servlet-mapping>
 </web-app>
