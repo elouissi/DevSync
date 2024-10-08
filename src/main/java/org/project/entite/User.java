@@ -7,6 +7,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import org.project.Enum.TypeRole;
 
 @Entity
 @Table(name = "users")
@@ -22,11 +23,12 @@ public class User {
 
     @Column(name = "email", nullable = false, unique = true)
     private String email;
+    @Column(name = "mot_de_pass", nullable = false)
+    private String mot_de_pass;
+    @Column(name = "role", nullable = false)
+    private TypeRole role;
 
     public User() {}
 
-    public User(String name, String email) {
-        this.name = name;
-        this.email = email;
-    }
+
 }

@@ -6,6 +6,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.project.Enum.TypeRole;
+import org.project.Util.PasswordUtil;
 import org.project.entite.User;
 import org.project.service.UserService;
 import java.io.IOException;
@@ -49,9 +51,16 @@ public class UserServlet extends HttpServlet {
         if ("create".equals(action)) {
             String name = request.getParameter("name");
             String email = request.getParameter("email");
+            String mot_de_pas = request.getParameter("mot_de_pass");
+            String password = PasswordUtil.hashPassword(mot_de_pas);
+            TypeRole role = TypeRole.valueOf(request.getParameter("role"));
+            System.out.println(mot_de_pas + "role: "+role);
             User user = new User();
+            System.out.println(user);
             user.setName(name);
             user.setEmail(email);
+            user.setMot_de_pass(password);
+            user.setRole(role);
             userService.createUser(user);
         } else if ("delete".equals(action)) {
             Long id = Long.valueOf(request.getParameter("id"));
@@ -59,12 +68,16 @@ public class UserServlet extends HttpServlet {
         } else if ("update".equals(action)) {
             String name = request.getParameter("name");
             String email = request.getParameter("email");
+            String mot_de_pas = request.getParameter("mot_de_pas");
+            TypeRole role = TypeRole.valueOf(request.getParameter("role"));
             int id = Integer.parseInt(request.getParameter("id"));
             User existingUser = userService.getUserById(id);
             if (existingUser != null) {
                 existingUser.setId(id);
                 existingUser.setName(name);
                 existingUser.setEmail(email);
+                existingUser.setMot_de_pass(mot_de_pas);
+                existingUser.setRole(role);
                 userService.updateUser(existingUser);
             }
             userService.updateUser(existingUser);
@@ -72,5 +85,6 @@ public class UserServlet extends HttpServlet {
         response.sendRedirect("users");
 
     }
+
 
 }

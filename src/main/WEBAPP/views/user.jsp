@@ -1,84 +1,127 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="org.project.entite.User" %>
 <%@ page import="java.util.List" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
-<html>
+<html lang="fr">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestion des Utilisateurs</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="container mt-5">
 
-<h1 class="text-center mb-4">Gestion des Utilisateurs</h1>
-
-<table class="table table-striped">
-    <thead class="thead-dark">
-    <tr>
-        <th>ID</th>
-        <th>Nom</th>
-        <th>Email</th>
-        <th>Actions</th>
-    </tr>
-    </thead>
-    <tbody>
-    <%
-        List<User> users = (List<User>) request.getAttribute("users");
-        for (User user : users) {
-    %>
-    <tr>
-        <td><%= user.getId() %></td>
-        <td><%= user.getName() %></td>
-        <td><%= user.getEmail() %></td>
-        <td>
-            <!-- Bouton de suppression -->
-            <form action="users" method="post" class="d-inline">
-                <input type="hidden" name="id" value="<%= user.getId() %>"/>
-                <button type="submit" name="action" value="delete" class="btn btn-danger btn-sm">
-                    Supprimer
-                </button>
-            </form>
-
-            <!-- Formulaire de mise à jour -->
-<%--            <form action="users" method="post" class="d-inline">--%>
-<%--                <input type="hidden" name="id" value="<%= user.getId() %>"/>--%>
-<%--                <input type="text" name="name" value="<%= user.getName() %>" class="form-control form-control-sm d-inline-block w-25" required/>--%>
-<%--                <input type="email" name="email" value="<%= user.getEmail() %>" class="form-control form-control-sm d-inline-block w-25" required/>--%>
-<%--                <button type="submit" name="action" value="update" class="btn btn-primary btn-sm">--%>
-<%--                    Modifier--%>
-<%--                </button>--%>
-<%--            </form>--%>
-            <form action="users" method="get" class="d-inline">
-                <input type="hidden" name="id" value="<%= user.getId() %>"/>
-                <button type="submit" class="btn btn-primary btn-sm">
-                    Modifier
-                </button>
-            </form>
-
-
-        </td>
-    </tr>
-    <%
+    <style>
+        body {
+            background-color: #f8f9fa;
         }
-    %>
-    </tbody>
-</table>
+        .header-title {
+            margin-top: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .table-container {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+<jsp:include page="layouts/nav.jsp" />
 
-<h2>Ajouter un Utilisateur</h2>
-<form action="users" method="post" class="form-inline">
-    <div class="form-group mb-2">
-        <%--@declare id="name"--%><label for="name" class="sr-only">Nom</label>
-        <input type="text" name="name" class="form-control" placeholder="Nom" required/>
+<h1 class="header-title">Gestion des Utilisateurs</h1>
+
+<div class="container">
+    <button type="button" class="btn btn-success mb-3" data-toggle="modal" data-target="#addUserModal">
+        Ajouter un Utilisateur
+    </button>
+
+    <div class="table-container">
+        <table class="table table-striped table-bordered">
+            <thead class="thead-dark">
+            <tr>
+                <th>ID</th>
+                <th>Nom</th>
+                <th>Email</th>
+                <th>Mot de pass</th>
+                <th>Role</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <%
+                List<User> users = (List<User>) request.getAttribute("users");
+                for (User user : users) {
+            %>
+            <tr>
+                <td><%= user.getId() %></td>
+                <td><%= user.getName() %></td>
+                <td><%= user.getEmail() %></td>
+                <td><%= user.getMot_de_pass() %></td>
+                <td><%= user.getRole() %></td>
+                <td>
+                    <form action="users" method="post" class="d-inline">
+                        <input type="hidden" name="id" value="<%= user.getId() %>"/>
+                        <button type="submit" name="action" value="delete" class="btn btn-danger btn-sm">
+                            Supprimer
+                        </button>
+                    </form>
+
+                    <form action="users" method="get" class="d-inline">
+                        <input type="hidden" name="id" value="<%= user.getId() %>"/>
+                        <button type="submit" class="btn btn-primary btn-sm">
+                            Modifier
+                        </button>
+                    </form>
+
+                    <form action="loginUser" method="post" class="d-inline">
+                        <input type="hidden" name="userId" value="<%= user.getId() %>"/>
+                        <button type="submit" class="btn btn-info btn-sm">Login</button>
+                    </form>
+                </td>
+            </tr>
+            <%
+                }
+            %>
+            </tbody>
+        </table>
     </div>
-    <div class="form-group mx-sm-3 mb-2">
-        <%--@declare id="email"--%><label for="email" class="sr-only">Email</label>
-        <input type="email" name="email" class="form-control" placeholder="Email" required/>
+</div>
+
+<div class="modal fade" id="addUserModal" tabindex="-1" role="dialog" aria-labelledby="addUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addUserModalLabel">Ajouter un Utilisateur</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="users" method="post" id="addUserForm">
+                    <div class="form-group">
+                        <label for="name">Nom</label>
+                        <input type="text" name="name" class="form-control" id="name" placeholder="Nom" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" name="email" class="form-control" id="email" placeholder="Email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="mot_de_pass">Mot de pass</label>
+                        <input type="password" name="mot_de_pass" class="form-control" id="mot_de_pass" placeholder="Mot de pass" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="role">Role</label>
+                        <input type="text" name="role" class="form-control" id="role" placeholder="Role" required>
+                    </div>
+                    <button type="submit" name="action" value="create" class="btn btn-success">Ajouter</button>
+                </form>
+            </div>
+        </div>
     </div>
-    <button type="submit" name="action" value="create" class="btn btn-success mb-2">Ajouter</button>
-</form>
+</div>
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>
+

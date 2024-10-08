@@ -13,5 +13,21 @@
         <servlet-name>UserServlet</servlet-name>
         <url-pattern>/users</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>loginUser</servlet-name>
+        <servlet-class>org.project.controller.LoginServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>loginUser</servlet-name>
+        <url-pattern>/loginUser</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>logoutUser</servlet-name>
+        <servlet-class>org.project.controller.LogoutServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>logoutUser</servlet-name>
+        <url-pattern>/logoutUser</url-pattern>
+    </servlet-mapping>
 
 </web-app>
