@@ -2,8 +2,10 @@ package org.project.entite;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import org.project.Enum.TypeRole;
+
 import org.project.Enum.TypeStatus;
+
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "tasks", schema = "public")
@@ -29,6 +31,12 @@ public class Task {
     @ManyToOne
     @JoinColumn(name = "assigned_user_id")
     private User assignedTo;
+
+    @Column(name = "date_debut")
+    private LocalDate dateDebut;
+
+    @Column(name = "date_fin")
+    private LocalDate dateFin;
 
 
 }

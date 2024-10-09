@@ -67,6 +67,8 @@
                 <th>Titre</th>
                 <th>Description</th>
                 <th>Status</th>
+                <th>Date Début</th>
+                <th>Date fin</th>
                 <th>Créée par</th>
                 <th>Assignée à</th>
                 <th>Actions</th>
@@ -75,7 +77,7 @@
             <tbody>
             <%
                 List<Task> tasks = (List<Task>) request.getAttribute("tasks");
-                List<Task> taskF=  tasks.stream().filter((t -> t.getCreatedBy().getId() == user.getId() && t.getAssignedTo().getId() == user.getId())).collect(Collectors.toList());
+                List<Task> taskF=  tasks.stream().filter((t -> t.getCreatedBy().getId() == user.getId() || t.getAssignedTo().getId() == user.getId())).collect(Collectors.toList());
 
                 for (Task task : taskF) {
             %>
@@ -84,6 +86,8 @@
                 <td><%= task.getTitre() %></td>
                 <td><%= task.getDescription() %></td>
                 <td><%= task.getStatus() %></td>
+                <td><%= task.getDateDebut() %></td>
+                <td><%= task.getDateFin() %></td>
                 <td><%= task.getCreatedBy().getName() %></td>
                 <td><%= (task.getAssignedTo() != null) ? task.getAssignedTo().getName() : "Non assignée" %></td>
                 <td>
@@ -131,12 +135,21 @@
                     <div class="form-group">
                         <label for="status">Status</label>
                         <select name="status" class="form-control" id="status" required>
-                            <option value="PENDING">En attente</option>
-                            <option value="IN_PROGRESS">En cours</option>
-                            <option value="COMPLETED">Complétée</option>
+                            <option value="en_attend">En attente</option>
+                            <option value="en_cours">En cours</option>
+                            <option value="termine">Complétée</option>
                         </select>
                     </div>
                     <div class="form-group">
+                        <label for="date_debut">Date de début</label>
+                        <input type="date" name="date_debut" class="form-control" id="date_debut" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="date_fin">Date de fin</label>
+                        <input type="date" name="date_fin" class="form-control" id="date_fin" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" name="created_user_id" value="<%= user.getId() %>" style="display: none;">
                         <label for="assigned_user">Assignée à</label>
                         <select name="assigned_user_id" class="form-control" id="assigned_user">
                             <option value="">Non assignée</option>
