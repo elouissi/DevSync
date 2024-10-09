@@ -75,6 +75,7 @@
                 <th>Date fin</th>
                 <th>Créée par</th>
                 <th>Assignée à</th>
+                <th>tags</th>
                 <th>Actions</th>
             </tr>
             </thead>
@@ -94,6 +95,22 @@
                 <td><%= task.getDateFin() %></td>
                 <td><%= task.getCreatedBy().getName() %></td>
                 <td><%= (task.getAssignedTo() != null) ? task.getAssignedTo().getName() : "Non assignée" %></td>
+                <td>
+                    <%List<Tag> tags = task.getTags();
+                        if (tags != null && !tags.isEmpty()) {
+                            for (Tag tag : tags) {
+                    %>
+                    <span class="badge badge-info"><%= tag.getName() %></span>
+                    <%
+                        }
+                    } else {
+                    %>
+                    <span>Aucun tag</span>
+                    <%
+                        }
+                    %>
+                </td>
+
                 <td>
                     <form action="tasks" method="post" class="d-inline">
                         <input type="hidden" name="id" value="<%= task.getId() %>"/>

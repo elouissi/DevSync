@@ -14,7 +14,6 @@ public class Tag {
     private int id;
 
     private String name;
-//    @ManyToMany(mappedBy = "tags")
     @ManyToMany(fetch = FetchType.EAGER)
     private List<Task> tasks;
 
