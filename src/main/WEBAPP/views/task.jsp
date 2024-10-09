@@ -4,6 +4,7 @@
 <%@ page import="org.project.entite.User" %>
 <%@ page import="java.util.stream.Collectors" %>
 <%@ page import="org.project.Enum.TypeRole" %>
+<%@ page import="org.project.entite.Tag" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <html lang="fr">
@@ -28,6 +29,9 @@
 </head>
 <body>
 <jsp:include page="layouts/nav.jsp" />
+<jsp:include page="layouts/sidebar.jsp" />
+
+<div class="main-content" style="margin-left: 260px;">
 
 <h1 class="header-title">Gestion des Tâches</h1>
 
@@ -163,15 +167,93 @@
                             %>
                         </select>
                     </div>
+                    <div class="form-group">
+                        <%--@declare id="tags"--%><label for="tags">Sélectionner un tag</label>
+                        <select id="tags-select" class="form-control">
+                            <option value="">Choisissez un tag</option>
+                            <%
+                                List<Tag> tags = (List<Tag>) request.getAttribute("tags");
+                                for (Tag tag : tags) {
+                            %>
+                            <option value="<%= tag.getId() %>"><%= tag.getName() %></option>
+                            <%
+                                }
+                            %>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Tags sélectionnés :</label>
+                        <ul id="selected-tags" class="list-group">
+                        </ul>
+                    </div>
+
+                    <input type="hidden" name="selected_tags" id="selected-tags-input" />
+
+
                     <button type="submit" name="action" value="create" class="btn btn-success">Ajouter</button>
                 </form>
             </div>
         </div>
     </div>
 </div>
+</div>
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const tagsSelect = document.getElementById('tags-select');
+        const selectedTagsList = document.getElementById('selected-tags');
+        const selectedTagsInput = document.getElementById('selected-tags-input');
 
+        // Tableau pour stocker les tags sélectionnés
+        let selectedTags = [];
+
+        // Ajouter un tag lorsqu'un tag est sélectionné
+        tagsSelect.addEventListener('change', function() {
+            const selectedOption = tagsSelect.options[tagsSelect.selectedIndex];
+            const tagId = selectedOption.value;
+            const tagName = selectedOption.text;
+
+            // Vérifier si le tag n'a pas déjà été ajouté
+            if (tagId && !selectedTags.includes(tagId)) {
+                // Ajouter le tag à la liste des tags sélectionnés
+                selectedTags.push(tagId);
+
+                // Mettre à jour l'affichage des tags sélectionnés
+                const listItem = document.createElement('li');
+                listItem.className = 'list-group-item d-flex justify-content-between align-items-center';
+                listItem.textContent = tagName;
+
+                // Ajouter un bouton pour supprimer le tag
+                const removeButton = document.createElement('button');
+                removeButton.textContent = 'X';
+                removeButton.className = 'btn btn-danger btn-sm';
+                removeButton.onclick = function() {
+                    // Supprimer le tag de l'interface et du tableau
+                    selectedTagsList.removeChild(listItem);
+                    selectedTags = selectedTags.filter(id => id !== tagId);
+                    updateSelectedTagsInput();
+                };
+
+                listItem.appendChild(removeButton);
+                selectedTagsList.appendChild(listItem);
+
+                // Mettre à jour le champ caché avec les tags sélectionnés
+                updateSelectedTagsInput();
+            }
+
+            // Réinitialiser la sélection du dropdown
+            tagsSelect.selectedIndex = 0;
+        });
+
+        // Met à jour la valeur de l'input caché avec les IDs des tags sélectionnés
+        function updateSelectedTagsInput() {
+            selectedTagsInput.value = selectedTags.join(',');
+        }
+    });
+
+</script>
 </body>
 </html>
