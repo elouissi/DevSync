@@ -68,7 +68,7 @@ public class TaskServlet extends HttpServlet {
             dispatcher.forward(request, response);
         }
     }
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         String action = request.getParameter("action");
         if ("create".equals(action)) {
             String titre = request.getParameter("titre");
@@ -78,6 +78,18 @@ public class TaskServlet extends HttpServlet {
             TypeStatus status = TypeStatus.valueOf(request.getParameter("status"));
             LocalDate date_debut = LocalDate.parse(request.getParameter("date_debut"));
             LocalDate date_fin = LocalDate.parse(request.getParameter("date_fin"));
+            if (LocalDate.now().plusDays(3).isAfter(date_debut) )
+            if (date_debut.isAfter(date_fin)) {
+                if (date_debut.isAfter(date_fin)) {
+                    request.getSession().setAttribute("error", "La date de début ne peut pas être après la date de fin.");
+                    response.sendRedirect("tasks");
+                    return;
+                }
+                response.sendRedirect("tasks");
+                return;
+            }else {
+                request.getSession().setAttribute("error", "La date que vous avez entrée il faut etre apres 3 jour la date d'aujourd'hui");
+            }
             String selectedTagIds = request.getParameter("selected_tags");
             if (selectedTagIds != null && !selectedTagIds.isEmpty()) {
                 String[] tagIdsArray = selectedTagIds.split(",");
@@ -98,10 +110,24 @@ public class TaskServlet extends HttpServlet {
             task.setDateFin(date_fin);
             taskService.createTask(task);
             response.sendRedirect("tasks");
-        }
+        }else {
+                request.getSession().setAttribute("erreur","entrez les tags" );
+                response.sendRedirect("taks");
+            }
+
+        } else if ("delete".equals(action)) {
+            HttpSession session = request.getSession(false);
+            if (session == null || session.getAttribute("currentUser") == null) {
+                response.sendRedirect("users");
+                return;
+            }
+            int taskId = Integer.parseInt(request.getParameter("id"));
+            taskService.deleteTask(taskId);
+            response.sendRedirect("tasks");
+
 
         }
 
 
-        }
+    }
 }

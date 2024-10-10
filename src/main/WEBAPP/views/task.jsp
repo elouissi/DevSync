@@ -34,6 +34,17 @@
 <div class="main-content" style="margin-left: 260px;">
 
 <h1 class="header-title">Gestion des Tâches</h1>
+    <%
+        String error = (String) session.getAttribute("error");
+        if (error != null) {
+    %>
+    <div class="alert alert-danger">
+        <%= error %>
+    </div>
+    <%
+            session.removeAttribute("error");
+        }
+    %>
 
 <div class="container">
     <div class="container">
@@ -118,9 +129,9 @@
                             Supprimer
                         </button>
                     </form>
-                    <form action="tasks" method="get" class="d-inline">
+                    <form action="tasks" method="post" class="d-inline">
                         <input type="hidden" name="id" value="<%= task.getId() %>"/>
-                        <button type="submit" class="btn btn-primary btn-sm">
+                        <button type="submit"  value="create" class="btn btn-primary btn-sm">
                             Modifier
                         </button>
                     </form>
@@ -171,6 +182,7 @@
                     </div>
                     <div class="form-group">
                         <input type="text" name="created_user_id" value="<%= user.getId() %>" style="display: none;">
+                        <% if (user.getRole() == TypeRole.valueOf("MANAGER")){%>
                         <label for="assigned_user">Assignée à</label>
                         <select name="assigned_user_id" class="form-control" id="assigned_user">
                             <option value="">Non assignée</option>
@@ -183,6 +195,17 @@
                                 }
                             %>
                         </select>
+                         <%
+                             }else {
+                         %>
+                        <select name="assigned_user_id" class="form-control" id="assigned_user">
+                        <label for="assigned_user">Assignée à</label>
+
+                            <option selected value="<%= user.getId() %>">assigné avous méme</option>
+
+                        </select>
+                        <%}%>
+
                     </div>
                     <div class="form-group">
                         <%--@declare id="tags"--%><label for="tags">Sélectionner un tag</label>
