@@ -5,6 +5,7 @@
 <%@ page import="java.util.stream.Collectors" %>
 <%@ page import="org.project.Enum.TypeRole" %>
 <%@ page import="org.project.entite.Tag" %>
+<%@ page import="org.project.service.RequestService" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <html lang="fr">
@@ -126,23 +127,49 @@
                     <%
                         }
                     %>
-                </td>
-                <%if (user.getRole() == TypeRole.USER) {  %>
-
+                    <%
+                        if (user.getRole() == TypeRole.USER) {
+                            %>
                 <td>
+                    <%
+                            RequestService requestService = new RequestService();
+                            boolean hasExistingRequest = requestService.getALlRequests()
+                                    .stream()
+                                    .anyMatch(req ->
+                                            req.getTask_id().getId() == task.getId() &&
+                                                    req.getUser_id().getId() == user.getId()
+                                    );
+
+                            if (!hasExistingRequest) {
+                    %>
                     <form action="requests" method="post">
                         <input type="hidden" name="action" value="rejectCreate">
                         <input type="hidden" name="taskId" value="<%= task.getId() %>">
-                        <button class="btn-warning  btn" type="submit">Rejecter</button>
+                        <button class="btn-warning btn" type="submit"
+                                <%= user.getJeton_Monsuel() <= 0 ? "disabled" : "" %>>
+                            Rejecter
+                        </button>
                     </form>
                     <form action="requests" method="post">
                         <input type="hidden" name="action" value="delete">
                         <input type="hidden" name="taskId" value="<%= task.getId() %>">
                         <button class="btn-danger btn" type="submit">Delete</button>
                     </form>
-                </td>
+                    <%
+                    } else {
+                    %>
+                    <span class="badge badge-info">Requête déjà créée</span>
+                <form action="requests" method="post">
+                    <input type="hidden" name="action" value="delete">
+                    <input type="hidden" name="taskId" value="<%= task.getId() %>">
+                    <button class="btn-danger btn" type="submit">Delete</button>
+                </form>
 
-                <%}%>
+                </td>
+                <%
+                        }
+                    }
+                %>
 
                 <td>
                     <form action="tasks" method="post" class="d-inline">

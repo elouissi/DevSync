@@ -22,4 +22,12 @@ public class RequestService {
     public void update(Request request){
         requestRepository.updateRequest(request);
     }
+    public boolean hasExistingRequest(int taskId, int userId) {
+        return getALlRequests()
+                .stream()
+                .anyMatch(request ->
+                        request.getTask_id().getId() == taskId &&
+                                request.getUser_id().getId() == userId
+                );
+    }
 }

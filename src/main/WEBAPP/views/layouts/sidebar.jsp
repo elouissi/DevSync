@@ -12,7 +12,7 @@
       if (user.getRole() == TypeRole.MANAGER) {
     %>
     <li class="nav-item">
-      <a class="nav-link" href="requests">Tags</a>
+      <a class="nav-link" href="requests">Requests</a>
     </li>
     <%}%>
   </ul>
