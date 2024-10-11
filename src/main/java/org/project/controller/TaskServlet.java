@@ -116,17 +116,22 @@ public class TaskServlet extends HttpServlet {
                 response.sendRedirect("taks");
             }
 
-        } else if ("delete".equals(action)) {
+        }
+        else if ("delete".equals(action)) {
             HttpSession session = request.getSession(false);
             if (session == null || session.getAttribute("currentUser") == null) {
                 response.sendRedirect("users");
                 return;
             }
-            int taskId = Integer.parseInt(request.getParameter("id"));
+            User currentUser = (User) request.getSession().getAttribute("currentUser");
+            int taskId = Integer.parseInt(request.getParameter("taskId"));
             taskService.deleteTask(taskId);
+            currentUser.setJeton_Annuel(currentUser.getJeton_Annuel() - 1);
+            userService.updateUser(currentUser);
             response.sendRedirect("tasks");
 
-        } else if ("update".equals(action)) {
+        }
+        else if ("update".equals(action)) {
             String titre = request.getParameter("titre");
             String description = request.getParameter("description");
             String created_user_id = request.getParameter("created_user_id");

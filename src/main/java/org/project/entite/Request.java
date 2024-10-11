@@ -15,7 +15,7 @@ public class Request {
     @Enumerated(EnumType.STRING)
     private TypeRequest status;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private Task task_id;
     @ManyToOne
     private User user_id;

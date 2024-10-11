@@ -47,7 +47,7 @@ public class RequestServlet extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 
         String action = request.getParameter("action");
-        if ("rejectCreate".equals(action)) {
+
 
             if ("rejectCreate".equals(action)) {
                 User currentUser = (User) request.getSession().getAttribute("currentUser");
@@ -71,7 +71,8 @@ public class RequestServlet extends HttpServlet {
                     }
                 }
                 response.sendRedirect("tasks");
-            } else if ("update_accepte".equals(action)) {
+            }
+            else if ("update_accepte".equals(action)) {
                 try {
                     int requestId = Integer.parseInt(request.getParameter("id"));
                     Request request1 = requestService.getById(requestId);
@@ -88,7 +89,8 @@ public class RequestServlet extends HttpServlet {
                 } catch (NumberFormatException e) {
                     throw new ServletException("ID de requête invalide", e);
                 }
-            } else if ("confirm_accept".equals(action)) {
+            }
+            else if ("confirm_accept".equals(action)) {
                 int taskId = Integer.parseInt(request.getParameter("taskId"));
                 int requestId = Integer.parseInt(request.getParameter("requestId"));
                 int newUserId = Integer.parseInt(request.getParameter("userId"));
@@ -104,5 +106,5 @@ public class RequestServlet extends HttpServlet {
                 response.sendRedirect("requests");
             }
         }
-    }
+
 }

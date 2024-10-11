@@ -150,7 +150,7 @@
                             Rejecter
                         </button>
                     </form>
-                    <form action="requests" method="post">
+                    <form action="tasks" method="post">
                         <input type="hidden" name="action" value="delete">
                         <input type="hidden" name="taskId" value="<%= task.getId() %>">
                         <button class="btn-danger btn" type="submit">Delete</button>
@@ -159,7 +159,7 @@
                     } else {
                     %>
                     <span class="badge badge-info">Requête déjà créée</span>
-                <form action="requests" method="post">
+                <form action="tasks" method="post">
                     <input type="hidden" name="action" value="delete">
                     <input type="hidden" name="taskId" value="<%= task.getId() %>">
                     <button class="btn-danger btn" type="submit">Delete</button>
