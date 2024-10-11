@@ -1,3 +1,5 @@
+<%@ page import="org.project.entite.User" %>
+<%@ page import="org.project.Enum.TypeRole" %>
 <div class="sidebar">
   <ul class="nav flex-column">
     <li class="nav-item">
@@ -6,6 +8,13 @@
     <li class="nav-item">
       <a class="nav-link" href="tags">Tags</a>
     </li>
+    <% User user = (User) session.getAttribute("currentUser");
+      if (user.getRole() == TypeRole.MANAGER) {
+    %>
+    <li class="nav-item">
+      <a class="nav-link" href="requests">Tags</a>
+    </li>
+    <%}%>
   </ul>
 </div>
 

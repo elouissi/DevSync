@@ -87,6 +87,10 @@
                 <th>Créée par</th>
                 <th>Assignée à</th>
                 <th>tags</th>
+                <%if (user.getRole() == TypeRole.USER) {  %>
+
+                <th>request</th>
+                <%}%>
                 <th>Actions</th>
             </tr>
             </thead>
@@ -106,6 +110,8 @@
                 <td><%= task.getDateFin() %></td>
                 <td><%= task.getCreatedBy().getName() %></td>
                 <td><%= (task.getAssignedTo() != null) ? task.getAssignedTo().getName() : "Non assignée" %></td>
+
+
                 <td>
                     <%List<Tag> tags = task.getTags();
                         if (tags != null && !tags.isEmpty()) {
@@ -121,6 +127,22 @@
                         }
                     %>
                 </td>
+                <%if (user.getRole() == TypeRole.USER) {  %>
+
+                <td>
+                    <form action="requests" method="post">
+                        <input type="hidden" name="action" value="rejectCreate">
+                        <input type="hidden" name="taskId" value="<%= task.getId() %>">
+                        <button class="btn-warning  btn" type="submit">Rejecter</button>
+                    </form>
+                    <form action="requests" method="post">
+                        <input type="hidden" name="action" value="delete">
+                        <input type="hidden" name="taskId" value="<%= task.getId() %>">
+                        <button class="btn-danger btn" type="submit">Delete</button>
+                    </form>
+                </td>
+
+                <%}%>
 
                 <td>
                     <form action="tasks" method="post" class="d-inline">
@@ -129,9 +151,9 @@
                             Supprimer
                         </button>
                     </form>
-                    <form action="tasks" method="post" class="d-inline">
+                    <form action="tasks" method="get" class="d-inline">
                         <input type="hidden" name="id" value="<%= task.getId() %>"/>
-                        <button type="submit"  value="create" class="btn btn-primary btn-sm">
+                        <button type="submit" class="btn btn-primary btn-sm">
                             Modifier
                         </button>
                     </form>

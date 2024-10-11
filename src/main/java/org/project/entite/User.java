@@ -28,6 +28,10 @@ public class User {
     @Column(name = "role", nullable = false)
     private TypeRole role;
 
+    private int Jeton_Monsuel = 2;
+    private int Jeton_Annuel = 1;
+
+
     public User() {}
 
 

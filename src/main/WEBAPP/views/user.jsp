@@ -42,6 +42,8 @@
                 <th>Email</th>
                 <th>Mot de pass</th>
                 <th>Role</th>
+                <th>Jeton Monsuel</th>
+                <th>Jeton Annuel</th>
                 <th>Actions</th>
             </tr>
             </thead>
@@ -54,8 +56,11 @@
                 <td><%= user.getId() %></td>
                 <td><%= user.getName() %></td>
                 <td><%= user.getEmail() %></td>
-                <td><%= user.getMot_de_pass() %></td>
+                <td>*******</td>
                 <td><%= user.getRole() %></td>
+                <td><%= user.getJeton_Monsuel() %></td>
+                <td><%= user.getJeton_Annuel() %></td>
+
                 <td>
                     <form action="users" method="post" class="d-inline">
                         <input type="hidden" name="id" value="<%= user.getId() %>"/>

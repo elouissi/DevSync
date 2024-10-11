@@ -9,7 +9,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.project.Enum.TypeRole;
 import org.project.Enum.TypeStatus;
-import org.project.Util.PasswordUtil;
 import org.project.entite.Tag;
 import org.project.entite.Task;
 import org.project.entite.User;
@@ -51,8 +50,11 @@ public class TaskServlet extends HttpServlet {
         if (idP != null) {
             int id = Integer.parseInt(idP);
             Task task = taskService.getById(id);
+            List<Tag> tags = tagService.getALlTags();
             if (task != null) {
                 request.setAttribute("task", task);
+                request.setAttribute("tags",tags);
+                request.setAttribute("users", users);
                 RequestDispatcher dispatcher = request.getRequestDispatcher("/views/editTask.jsp");
                 dispatcher.forward(request, response);
             } else {
@@ -98,7 +100,6 @@ public class TaskServlet extends HttpServlet {
                     Tag tag = tagService.getById(Integer.parseInt(tagId));
                     selectedTags.add(tag);
                 }
-                System.out.println(selectedTags);
             Task task = new Task();
             task.setTitre(titre);
             task.setTags(selectedTags);
@@ -125,7 +126,37 @@ public class TaskServlet extends HttpServlet {
             taskService.deleteTask(taskId);
             response.sendRedirect("tasks");
 
+        } else if ("update".equals(action)) {
+            String titre = request.getParameter("titre");
+            String description = request.getParameter("description");
+            String created_user_id = request.getParameter("created_user_id");
+            String assigned_user_id = request.getParameter("assigned_user_id");
+            TypeStatus status = TypeStatus.valueOf(request.getParameter("status"));
+            LocalDate date_debut = LocalDate.parse(request.getParameter("date_debut"));
+            LocalDate date_fin = LocalDate.parse(request.getParameter("date_fin"));
+            String selectedTagIds = request.getParameter("selected_tags");
+            int id = Integer.parseInt(request.getParameter("id"));
+            Task existingTask = taskService.getById(id);
+            if (existingTask != null) {
+                existingTask.setId(id);
+                existingTask.setTitre(titre);
+                existingTask.setDescription(description);
+                existingTask.setCreatedBy(userService.getUserById(Integer.parseInt(created_user_id)));
+                existingTask.setAssignedTo(userService.getUserById(Integer.parseInt(assigned_user_id)));
+                existingTask.setDateDebut(date_debut);
+                existingTask.setDateFin(date_fin);
+                if (selectedTagIds != null && !selectedTagIds.isEmpty()) {
+                    String[] tagIdsArray = selectedTagIds.split(",");
+                    List<Tag> selectedTags = new ArrayList<>();
+                    for (String tagId : tagIdsArray) {
+                        Tag tag = tagService.getById(Integer.parseInt(tagId));
+                        selectedTags.add(tag);
+                    }
+                    existingTask.setTags(selectedTags);
+                    taskService.updateTask(existingTask);
+                }
 
+            }
         }
 
 
