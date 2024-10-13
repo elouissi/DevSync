@@ -146,7 +146,9 @@
                                     );
 
                             if (!hasExistingRequest) {
+                                if (!(task.getCreatedBy().getId() == user.getId())){
                     %>
+
                 <form action="requests" method="post">
                     <input type="hidden" name="action" value="rejectCreate">
                     <input type="hidden" name="taskId" value="<%= task.getId() %>">
@@ -155,6 +157,8 @@
                         Rejeter
                     </button>
                 </form>
+                <%}%>
+
 
                 <form action="tasks" method="post">
                         <input type="hidden" name="action" value="delete">

@@ -121,7 +121,6 @@ public class RequestServlet extends HttpServlet {
 
                 response.sendRedirect("requests");
             } else if ("update_refuse".equals(action)) {
-            System.out.println("sur le bon chemin");
             int requestId = Integer.parseInt(request.getParameter("id"));
             Request request1 = requestService.getById(requestId);
             if (request1 != null && request1.getTask() != null) {

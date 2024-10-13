@@ -1,6 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="org.project.entite.Request" %>
 <%@ page import="java.util.List" %>
+<%@ page import="org.project.Enum.TypeRequest" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <html lang="fr">
@@ -59,7 +60,7 @@
         <td><%= requestB.getStatus() %></td>
 
         <%
-          if (requestB.getStatus().equals("EN_ATTENT")){
+          if (requestB.getStatus() == TypeRequest.valueOf("EN_ATTENT")){
 
 
         %>

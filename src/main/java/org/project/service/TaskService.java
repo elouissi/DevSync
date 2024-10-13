@@ -1,5 +1,6 @@
 package org.project.service;
 
+import org.project.Enum.TypeStatus;
 import org.project.entite.Task;
 import org.project.repositorie.TaskRepository;
 
@@ -24,5 +25,11 @@ public class TaskService {
     }
     public void updateTask(Task task){
         taskRepository.updateTask(task);
+    }
+
+    public void updateTaskStatus(int id, TypeStatus typeStatus) {
+        Task task = this.getById(id);
+        task.setStatus(typeStatus);
+        this.updateTask(task);
     }
 }

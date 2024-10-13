@@ -16,6 +16,7 @@ public class Task {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+
     @Column(name = "titre", nullable = false)
     private String titre;
     @Column(name = "description", nullable = false)

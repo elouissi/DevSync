@@ -1,6 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="org.project.entite.User" %>
 <%@ page import="java.util.List" %>
+<%@ page import="org.project.Enum.TypeRole" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <html lang="fr">
@@ -58,8 +59,14 @@
                 <td><%= user.getEmail() %></td>
                 <td>*******</td>
                 <td><%= user.getRole() %></td>
+                <%if(user.getRole() == TypeRole.valueOf("USER")){%>
                 <td><%= user.getJeton_Monsuel() %></td>
                 <td><%= user.getJeton_Annuel() %></td>
+                <%}else {%>
+                <td>c'est un admin</td>
+                <td>c'est un admin</td>
+
+                <%}%>
 
                 <td>
                     <form action="users" method="post" class="d-inline">

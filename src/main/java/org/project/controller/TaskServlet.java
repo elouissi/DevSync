@@ -12,6 +12,7 @@ import org.project.Enum.TypeStatus;
 import org.project.entite.Tag;
 import org.project.entite.Task;
 import org.project.entite.User;
+import org.project.scheduler.TaskScheduler;
 import org.project.service.TagService;
 import org.project.service.TaskService;
 import org.project.service.UserService;
@@ -61,9 +62,10 @@ public class TaskServlet extends HttpServlet {
                 response.sendRedirect("tasks");
             }
         } else {
+            TaskScheduler scheduler = new TaskScheduler();
+            scheduler.startScheduler();
             List<Task> tasks = taskService.getALlTasks();
             List<Tag> tags = tagService.getALlTags();
-            System.out.println(tasks);
             request.setAttribute("tasks", tasks);
             request.setAttribute("tags", tags);
             RequestDispatcher dispatcher = request.getRequestDispatcher("/views/task.jsp");
@@ -80,18 +82,18 @@ public class TaskServlet extends HttpServlet {
             TypeStatus status = TypeStatus.valueOf(request.getParameter("status"));
             LocalDate date_debut = LocalDate.parse(request.getParameter("date_debut"));
             LocalDate date_fin = LocalDate.parse(request.getParameter("date_fin"));
-            if (LocalDate.now().plusDays(3).isAfter(date_debut) )
-            if (date_debut.isAfter(date_fin)) {
-                if (date_debut.isAfter(date_fin)) {
-                    request.getSession().setAttribute("error", "La date de début ne peut pas être après la date de fin.");
-                    response.sendRedirect("tasks");
-                    return;
-                }
-                response.sendRedirect("tasks");
-                return;
-            }else {
-                request.getSession().setAttribute("error", "La date que vous avez entrée il faut etre apres 3 jour la date d'aujourd'hui");
-            }
+//            if (LocalDate.now().plusDays(3).isAfter(date_debut) ){
+//            if (date_debut.isAfter(date_fin)) {
+//                if (date_debut.isAfter(date_fin)) {
+//                    request.getSession().setAttribute("error", "La date de début ne peut pas être après la date de fin.");
+//                    response.sendRedirect("tasks");
+//                    return;
+//                }
+//                response.sendRedirect("tasks");
+//                return;
+//            }else {
+//                request.getSession().setAttribute("error", "La date que vous avez entrée il faut etre apres 3 jour la date d'aujourd'hui");
+//            }
             String selectedTagIds = request.getParameter("selected_tags");
             if (selectedTagIds != null && !selectedTagIds.isEmpty()) {
                 String[] tagIdsArray = selectedTagIds.split(",");
@@ -100,17 +102,18 @@ public class TaskServlet extends HttpServlet {
                     Tag tag = tagService.getById(Integer.parseInt(tagId));
                     selectedTags.add(tag);
                 }
-            Task task = new Task();
-            task.setTitre(titre);
-            task.setTags(selectedTags);
-            task.setDescription(description);
-            task.setAssignedTo(userService.getUserById(Integer.parseInt(assigned_user_id)));
-            task.setCreatedBy(userService.getUserById(Integer.parseInt(created_user_id)));
-            task.setStatus(status);
-            task.setDateDebut(date_debut);
-            task.setDateFin(date_fin);
-            taskService.createTask(task);
-            response.sendRedirect("tasks");
+                Task task = new Task();
+                task.setTitre(titre);
+                task.setTags(selectedTags);
+                task.setDescription(description);
+                task.setAssignedTo(userService.getUserById(Integer.parseInt(assigned_user_id)));
+                task.setCreatedBy(userService.getUserById(Integer.parseInt(created_user_id)));
+                task.setStatus(status);
+                task.setDateDebut(date_debut);
+                task.setDateFin(date_fin);
+                taskService.createTask(task);
+                response.sendRedirect("tasks");
+//            }
         }else {
                 request.getSession().setAttribute("erreur","entrez les tags" );
                 response.sendRedirect("taks");
@@ -125,9 +128,12 @@ public class TaskServlet extends HttpServlet {
             }
             User currentUser = (User) request.getSession().getAttribute("currentUser");
             int taskId = Integer.parseInt(request.getParameter("taskId"));
+            Task task = taskService.getById(taskId);
             taskService.deleteTask(taskId);
-            currentUser.setJeton_Annuel(currentUser.getJeton_Annuel() - 1);
-            userService.updateUser(currentUser);
+            if (!(task.getCreatedBy().getId() == currentUser.getId())){
+                currentUser.setJeton_Annuel(currentUser.getJeton_Annuel() - 1);
+                userService.updateUser(currentUser);
+            }
             response.sendRedirect("tasks");
 
         }
