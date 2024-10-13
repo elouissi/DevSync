@@ -36,12 +36,17 @@
 
 <h1 class="header-title">Gestion des Tâches</h1>
     <%
+        String message = (String) session.getAttribute("message");
+        if (message != null) {
+    %>
+    <div class="alert alert-success"><%= message %></div>
+    <%
+            session.removeAttribute("message");
+        }
         String error = (String) session.getAttribute("error");
         if (error != null) {
     %>
-    <div class="alert alert-danger">
-        <%= error %>
-    </div>
+    <div class="alert alert-danger"><%= error %></div>
     <%
             session.removeAttribute("error");
         }
@@ -136,21 +141,22 @@
                             boolean hasExistingRequest = requestService.getALlRequests()
                                     .stream()
                                     .anyMatch(req ->
-                                            req.getTask_id().getId() == task.getId() &&
-                                                    req.getUser_id().getId() == user.getId()
+                                            req.getTask().getId() == task.getId() &&
+                                                    req.getUser().getId() == user.getId()
                                     );
 
                             if (!hasExistingRequest) {
                     %>
-                    <form action="requests" method="post">
-                        <input type="hidden" name="action" value="rejectCreate">
-                        <input type="hidden" name="taskId" value="<%= task.getId() %>">
-                        <button class="btn-warning btn" type="submit"
-                                <%= user.getJeton_Monsuel() <= 0 ? "disabled" : "" %>>
-                            Rejecter
-                        </button>
-                    </form>
-                    <form action="tasks" method="post">
+                <form action="requests" method="post">
+                    <input type="hidden" name="action" value="rejectCreate">
+                    <input type="hidden" name="taskId" value="<%= task.getId() %>">
+                    <button class="btn-warning btn" type="submit"
+                            <%= user.getJeton_Monsuel() <= 0 ? "disabled" : "" %>>
+                        Rejeter
+                    </button>
+                </form>
+
+                <form action="tasks" method="post">
                         <input type="hidden" name="action" value="delete">
                         <input type="hidden" name="taskId" value="<%= task.getId() %>">
                         <button class="btn-danger btn" type="submit">Delete</button>

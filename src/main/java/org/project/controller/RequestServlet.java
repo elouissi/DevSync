@@ -18,7 +18,6 @@ import org.project.service.UserService;
 import java.io.IOException;
 import java.util.List;
 @WebServlet(name = "RequestServlet", value = "/requests")
-
 public class RequestServlet extends HttpServlet {
     private RequestService requestService;
     private TaskService taskService;
@@ -44,41 +43,58 @@ public class RequestServlet extends HttpServlet {
         dispatcher.forward(request, response);
     }
 
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
 
-
-            if ("rejectCreate".equals(action)) {
-                User currentUser = (User) request.getSession().getAttribute("currentUser");
-
-                if (currentUser.getJeton_Monsuel() > 0) {
-                    int taskId = Integer.parseInt(request.getParameter("taskId"));
-
-                    if (!requestService.hasExistingRequest(taskId, currentUser.getId())) {
-                        Request newRequest = new Request();
-                        newRequest.setStatus(TypeRequest.EN_ATTENT);
-                        newRequest.setTask_id(taskService.getById(taskId));
-                        newRequest.setUser_id(currentUser);
-
-                        currentUser.setJeton_Monsuel(currentUser.getJeton_Monsuel() - 1);
-                        userService.updateUser(currentUser);
-
-                        requestService.createRequest(newRequest);
-
-                        List<Request> requests = requestService.getALlRequests();
-                        request.setAttribute("requests", requests);
-                    }
-                }
-                response.sendRedirect("tasks");
+        if ("rejectCreate".equals(action)) {
+            HttpSession session = request.getSession(false);
+            if (session == null || session.getAttribute("currentUser") == null) {
+                response.sendRedirect("users");
+                return;
             }
+
+            User currentUser = (User) session.getAttribute("currentUser");
+            int taskId = Integer.parseInt(request.getParameter("taskId"));
+
+            try {
+                if (currentUser.getJeton_Monsuel() > 0 && !requestService.hasExistingRequest(taskId, currentUser.getId())) {
+                    Task task = taskService.getById(taskId);
+                    if (task == null) {
+                        throw new ServletException("Task not found");
+                    }
+                    Request newRequest = new Request();
+                    newRequest.setStatus(TypeRequest.EN_ATTENT);
+                    newRequest.setTask(task);
+                    newRequest.setUser(currentUser);
+
+                    requestService.createRequest(newRequest);
+
+                    currentUser.setJeton_Monsuel(currentUser.getJeton_Monsuel() - 1);
+                    userService.updateUser(currentUser);
+
+                    session.setAttribute("message", "Request created successfully");
+                } else {
+                    session.setAttribute("error", "Unable to create request. Check your tokens or existing requests.");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                session.setAttribute("error", "Error creating request: " + e.getMessage());
+                response.sendRedirect("tasks");
+                return;
+
+        }
+
+            response.sendRedirect("tasks");
+        }
+
             else if ("update_accepte".equals(action)) {
                 try {
                     int requestId = Integer.parseInt(request.getParameter("id"));
                     Request request1 = requestService.getById(requestId);
 
-                    if (request1 != null && request1.getTask_id() != null) {
-                        Task task = taskService.getById(request1.getTask_id().getId());
+                    if (request1 != null && request1.getTask() != null) {
+                        Task task = taskService.getById(request1.getTask().getId());
                         request.setAttribute("task", String.valueOf(task.getId()));
                         request.setAttribute("request", String.valueOf(request1.getId()));
                         RequestDispatcher dispatcher = request.getRequestDispatcher("/views/accepteRequest.jsp");
@@ -104,7 +120,23 @@ public class RequestServlet extends HttpServlet {
                 taskService.updateTask(task);
 
                 response.sendRedirect("requests");
+            } else if ("update_refuse".equals(action)) {
+            System.out.println("sur le bon chemin");
+            int requestId = Integer.parseInt(request.getParameter("id"));
+            Request request1 = requestService.getById(requestId);
+            if (request1 != null && request1.getTask() != null) {
+                request1.setStatus(TypeRequest.REFUSE);
+                requestService.update(request1);
+
+            } else {
+                throw new ServletException("Requête ou tâche invalide");
             }
+            response.sendRedirect("requests");
+
+
+
+
         }
+    }
 
 }

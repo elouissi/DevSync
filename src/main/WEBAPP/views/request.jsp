@@ -54,12 +54,17 @@
       %>
       <tr>
         <td><%= requestB.getId() %></td>
-        <td><%= requestB.getUser_id().getName() %></td>
-        <td><%= requestB.getTask_id().getTitre() %></td>
+        <td><%= requestB.getUser().getName() %></td>
+        <td><%= requestB.getTask().getTitre() %></td>
         <td><%= requestB.getStatus() %></td>
 
+        <%
+          if (requestB.getStatus().equals("EN_ATTENT")){
 
+
+        %>
         <td>
+
           <form action="requests" method="post" class="d-inline">
             <input type="hidden" name="id" value="<%= requestB.getId() %>"/>
             <button type="submit" name="action" value="update_accepte" class="btn btn-success btn-sm">
@@ -67,15 +72,20 @@
             </button>
           </form>
 
+
           <form action="requests" method="post" class="d-inline">
             <input type="hidden" name="id" value="<%= requestB.getId() %>"/>
-            <button type="submit" class="btn btn-danger btn-sm" value="update_refuse">
+            <button type="submit"  name="action" class="btn btn-danger btn-sm" value="update_refuse">
               Refusé
             </button>
           </form>
 
 
         </td>
+        <%}else {%>
+        <td>l'operation est déja faite</td>
+        <%}%>
+
       </tr>
       <%
         }
