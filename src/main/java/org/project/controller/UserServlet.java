@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.project.Enum.TypeRole;
 import org.project.Util.PasswordUtil;
 import org.project.entite.User;
+import org.project.scheduler.UserScheduler;
 import org.project.service.UserService;
 import java.io.IOException;
 import java.util.List;
@@ -25,6 +26,8 @@ public class UserServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String idP = request.getParameter("id");
+//        UserScheduler userScheduler = new UserScheduler();
+//        userScheduler.startScheduler();
         if (idP != null){
             int id = Integer.parseInt(idP);
             User user = userService.getUserById(id);

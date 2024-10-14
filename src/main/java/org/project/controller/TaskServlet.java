@@ -62,8 +62,8 @@ public class TaskServlet extends HttpServlet {
                 response.sendRedirect("tasks");
             }
         } else {
-            TaskScheduler scheduler = new TaskScheduler();
-            scheduler.startScheduler();
+//            TaskScheduler scheduler = new TaskScheduler();
+//            scheduler.startScheduler();
             List<Task> tasks = taskService.getALlTasks();
             List<Tag> tags = tagService.getALlTags();
             request.setAttribute("tasks", tasks);
@@ -75,50 +75,83 @@ public class TaskServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         String action = request.getParameter("action");
         if ("create".equals(action)) {
+            System.out.println("Voilà, c'est la fonction de création");
+
             String titre = request.getParameter("titre");
             String description = request.getParameter("description");
-            String created_user_id = request.getParameter("created_user_id");
-            String assigned_user_id = request.getParameter("assigned_user_id");
-            TypeStatus status = TypeStatus.valueOf(request.getParameter("status"));
-            LocalDate date_debut = LocalDate.parse(request.getParameter("date_debut"));
-            LocalDate date_fin = LocalDate.parse(request.getParameter("date_fin"));
-//            if (LocalDate.now().plusDays(3).isAfter(date_debut) ){
-//            if (date_debut.isAfter(date_fin)) {
-//                if (date_debut.isAfter(date_fin)) {
-//                    request.getSession().setAttribute("error", "La date de début ne peut pas être après la date de fin.");
-//                    response.sendRedirect("tasks");
-//                    return;
-//                }
-//                response.sendRedirect("tasks");
-//                return;
-//            }else {
-//                request.getSession().setAttribute("error", "La date que vous avez entrée il faut etre apres 3 jour la date d'aujourd'hui");
-//            }
+            String createdUserIdParam = request.getParameter("created_user_id");
+            String assignedUserIdParam = request.getParameter("assigned_user_id");
+            String statusParam = request.getParameter("status");
+            String dateDebutParam = request.getParameter("date_debut");
+            String dateFinParam = request.getParameter("date_fin");
             String selectedTagIds = request.getParameter("selected_tags");
-            if (selectedTagIds != null && !selectedTagIds.isEmpty()) {
-                String[] tagIdsArray = selectedTagIds.split(",");
-                List<Tag> selectedTags = new ArrayList<>();
-                for (String tagId : tagIdsArray) {
-                    Tag tag = tagService.getById(Integer.parseInt(tagId));
-                    selectedTags.add(tag);
-                }
-                Task task = new Task();
-                task.setTitre(titre);
-                task.setTags(selectedTags);
-                task.setDescription(description);
-                task.setAssignedTo(userService.getUserById(Integer.parseInt(assigned_user_id)));
-                task.setCreatedBy(userService.getUserById(Integer.parseInt(created_user_id)));
-                task.setStatus(status);
-                task.setDateDebut(date_debut);
-                task.setDateFin(date_fin);
-                taskService.createTask(task);
+
+            if (titre == null || description == null || createdUserIdParam == null || assignedUserIdParam == null || statusParam == null || dateDebutParam == null || dateFinParam == null) {
+                request.getSession().setAttribute("error", "Tous les champs sont obligatoires.");
                 response.sendRedirect("tasks");
-//            }
-        }else {
-                request.getSession().setAttribute("erreur","entrez les tags" );
-                response.sendRedirect("taks");
+                return;
             }
 
+            try {
+                TypeStatus status = TypeStatus.valueOf(statusParam);
+                LocalDate dateDebut = LocalDate.parse(dateDebutParam);
+                LocalDate dateFin = LocalDate.parse(dateFinParam);
+
+                if (LocalDate.now().plusDays(3).isAfter(dateDebut)) {
+                    request.getSession().setAttribute("error", "La date de début doit être au moins 3 jours après aujourd'hui.");
+                    response.sendRedirect("tasks");
+                    return;
+                }
+
+                if (dateDebut.isAfter(dateFin)) {
+                    request.getSession().setAttribute("error", "La date de début ne peut pas être après la date de fin.");
+                    response.sendRedirect("tasks");
+                    return;
+                }
+
+                User createdUser = userService.getUserById(Integer.parseInt(createdUserIdParam));
+                User assignedUser = userService.getUserById(Integer.parseInt(assignedUserIdParam));
+                if (createdUser == null || assignedUser == null) {
+                    request.getSession().setAttribute("error", "Les utilisateurs sélectionnés sont invalides.");
+                    response.sendRedirect("tasks");
+                    return;
+                }
+
+
+                List<Tag> selectedTags = new ArrayList<>();
+                if (selectedTagIds != null && !selectedTagIds.isEmpty()) {
+                    String[] tagIdsArray = selectedTagIds.split(",");
+                    for (String tagId : tagIdsArray) {
+                        Tag tag = tagService.getById(Integer.parseInt(tagId));
+                        if (tag != null) {
+                            selectedTags.add(tag);
+                        }
+                    }
+                }
+
+                if (selectedTags.isEmpty()) {
+                    request.getSession().setAttribute("error", "Veuillez sélectionner au moins un tag.");
+                    response.sendRedirect("tasks");
+                    return;
+                }
+
+                Task task = new Task();
+                task.setTitre(titre);
+                task.setDescription(description);
+                task.setCreatedBy(createdUser);
+                task.setAssignedTo(assignedUser);
+                task.setStatus(status);
+                task.setDateDebut(dateDebut);
+                task.setDateFin(dateFin);
+                task.setTags(selectedTags);
+
+                taskService.createTask(task);
+                response.sendRedirect("tasks");
+            } catch (Exception e) {
+                e.printStackTrace();
+                request.getSession().setAttribute("error", "Une erreur est survenue lors de la création de la tâche.");
+                response.sendRedirect("tasks");
+            }
         }
         else if ("delete".equals(action)) {
             HttpSession session = request.getSession(false);

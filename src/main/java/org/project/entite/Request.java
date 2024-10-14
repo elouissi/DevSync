@@ -6,6 +6,8 @@ import org.project.Enum.TypeRequest;
 import org.project.entite.Task;
 import org.project.entite.User;
 
+import java.time.LocalDate;
+
 @Entity
 @Data
 @Table(name = "requests" ,schema="public" )
@@ -16,6 +18,9 @@ public class Request {
 
     @Enumerated(EnumType.STRING)
     private TypeRequest status;
+
+    @Column(name = "created_at", nullable = false)
+    private LocalDate created_at;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "task_id", referencedColumnName = "id")

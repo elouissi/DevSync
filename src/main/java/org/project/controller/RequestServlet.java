@@ -11,11 +11,13 @@ import org.project.Enum.TypeRequest;
 import org.project.entite.Request;
 import org.project.entite.Task;
 import org.project.entite.User;
+import org.project.scheduler.RequestScheduler;
 import org.project.service.RequestService;
 import org.project.service.TaskService;
 import org.project.service.UserService;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 @WebServlet(name = "RequestServlet", value = "/requests")
 public class RequestServlet extends HttpServlet {
@@ -36,7 +38,8 @@ public class RequestServlet extends HttpServlet {
             response.sendRedirect("users");
             return;
         }
-        System.out.println("la requet a une direction correct2");
+//        RequestScheduler requestScheduler = new RequestScheduler();
+//        requestScheduler.startScheduler();
         List<Request> requests = requestService.getALlRequests();
         request.setAttribute("requests", requests);
         RequestDispatcher dispatcher = request.getRequestDispatcher("/views/request.jsp");
@@ -67,6 +70,7 @@ public class RequestServlet extends HttpServlet {
                     newRequest.setStatus(TypeRequest.EN_ATTENT);
                     newRequest.setTask(task);
                     newRequest.setUser(currentUser);
+                    newRequest.setCreated_at(LocalDate.now());
 
                     requestService.createRequest(newRequest);
 
