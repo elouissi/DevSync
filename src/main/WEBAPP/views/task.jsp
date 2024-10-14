@@ -163,7 +163,7 @@
                 <form action="tasks" method="post">
                         <input type="hidden" name="action" value="delete">
                         <input type="hidden" name="taskId" value="<%= task.getId() %>">
-                        <button class="btn-danger btn" type="submit">Delete</button>
+                        <button class="btn-danger btn" type="submit"    <%= user.getJeton_Annuel() <= 0 ? "disabled" : "" %>>Delete</button>
                     </form>
                     <%
                     } else {
@@ -180,10 +180,12 @@
                         }
                     }
                 %>
-
+                <%
+                    if(task.getCreatedBy().getId() == user.getId()){
+                %>
                 <td>
                     <form action="tasks" method="post" class="d-inline">
-                        <input type="hidden" name="id" value="<%= task.getId() %>"/>
+                        <input type="hidden" name="taskId" value="<%= task.getId() %>"/>
                         <button type="submit" name="action" value="delete" class="btn btn-danger btn-sm">
                             Supprimer
                         </button>
@@ -197,6 +199,11 @@
                 </td>
             </tr>
             <%
+                    }else { %>
+            <td>vous avez pas le droit</td>
+            <%
+
+                    }
                 }
             %>
             </tbody>

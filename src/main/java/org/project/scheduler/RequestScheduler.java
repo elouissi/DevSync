@@ -1,5 +1,6 @@
 package org.project.scheduler;
 
+import com.sun.source.tree.BreakTree;
 import org.project.Enum.TypeRequest;
 import org.project.entite.Request;
 import org.project.entite.User;
@@ -18,6 +19,7 @@ public class RequestScheduler {
     private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
     private final RequestService requestService = new RequestService();
     private final UserService userService = new UserService();
+    private final  TokenScheduler tokenScheduler = new TokenScheduler();
 
 
     public void startScheduler() {
@@ -36,11 +38,9 @@ public class RequestScheduler {
             List<Request> requests = requestService.getALlRequests();
             for (Request request : requests) {
                 if (isRequestOlderThan12Hours(request) && request.getStatus() == TypeRequest.EN_ATTENT) {
-                     User user =  request.getUser();
-                     user.setJeton_Monsuel(user.getJeton_Monsuel() * 2);
-                    userService.updateUser(user);
-                    request.setStatus(TypeRequest.ACCEPTE);
+                    request.setStatus(TypeRequest.EXPIRE);
                     requestService.update(request);
+                    tokenScheduler.startScheduler(request);
 
                 }
             }

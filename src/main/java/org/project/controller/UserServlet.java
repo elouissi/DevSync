@@ -26,8 +26,8 @@ public class UserServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String idP = request.getParameter("id");
-//        UserScheduler userScheduler = new UserScheduler();
-//        userScheduler.startScheduler();
+        UserScheduler userScheduler = new UserScheduler();
+        userScheduler.startScheduler();
         if (idP != null){
             int id = Integer.parseInt(idP);
             User user = userService.getUserById(id);

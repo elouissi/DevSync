@@ -38,8 +38,8 @@ public class RequestServlet extends HttpServlet {
             response.sendRedirect("users");
             return;
         }
-//        RequestScheduler requestScheduler = new RequestScheduler();
-//        requestScheduler.startScheduler();
+        RequestScheduler requestScheduler = new RequestScheduler();
+        requestScheduler.startScheduler();
         List<Request> requests = requestService.getALlRequests();
         request.setAttribute("requests", requests);
         RequestDispatcher dispatcher = request.getRequestDispatcher("/views/request.jsp");

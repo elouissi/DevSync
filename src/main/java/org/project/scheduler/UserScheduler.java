@@ -24,7 +24,7 @@ public class UserScheduler {
         try {
             List<User> users = userService.getAllUsers();
             for (User user : users) {
-                if (user.getJeton_Monsuel() < 2 ) {
+                if (user.getJeton_Monsuel() != 2 ) {
                     while (user.getJeton_Monsuel() <2){
                         user.setJeton_Monsuel(user.getJeton_Monsuel() +1 );
                         userService.updateUser(user);

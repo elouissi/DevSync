@@ -62,8 +62,8 @@ public class TaskServlet extends HttpServlet {
                 response.sendRedirect("tasks");
             }
         } else {
-//            TaskScheduler scheduler = new TaskScheduler();
-//            scheduler.startScheduler();
+            TaskScheduler scheduler = new TaskScheduler();
+            scheduler.startScheduler();
             List<Task> tasks = taskService.getALlTasks();
             List<Tag> tags = tagService.getALlTags();
             request.setAttribute("tasks", tasks);
@@ -163,9 +163,16 @@ public class TaskServlet extends HttpServlet {
             int taskId = Integer.parseInt(request.getParameter("taskId"));
             Task task = taskService.getById(taskId);
             taskService.deleteTask(taskId);
-            if (!(task.getCreatedBy().getId() == currentUser.getId())){
-                currentUser.setJeton_Annuel(currentUser.getJeton_Annuel() - 1);
-                userService.updateUser(currentUser);
+            if (!(task.getCreatedBy().getId() == currentUser.getId()) ){
+                if (currentUser.getJeton_Annuel() >= 1){
+                    currentUser.setJeton_Annuel(currentUser.getJeton_Annuel() - 1);
+                    userService.updateUser(currentUser);
+                }else {
+                    request.getSession().setAttribute("error", "vous avez pas de jeton.");
+                    response.sendRedirect("tasks");
+
+                }
+
             }
             response.sendRedirect("tasks");
 
