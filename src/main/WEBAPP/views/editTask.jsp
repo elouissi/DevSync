@@ -28,7 +28,7 @@
     Task task = new TaskService().getById(Integer.parseInt(taskId));
 %>
 
-<form action="users" method="post" style="margin: 50px" >
+<form action="tasks" method="post" style="margin: 50px" >
     <input type="hidden" name="id" value="<%= task.getId() %>"/>
 
     <div class="form-group">
@@ -82,49 +82,49 @@
         <% } %>
 
     </div>
-    <div class="form-group">
-        <label for="tags">Choisir les tags</label>
-        <select name="tags" id="tags" multiple>
-            <%
-                List<Tag> allTags = (List<Tag>) request.getAttribute("tags");
-                List<Tag> selectedTags = (List<Tag>) request.getAttribute("selectedTags");
+<%--    <div class="form-group">--%>
+<%--        <label for="tags">Choisir les tags</label>--%>
+<%--        <select name="tags" id="tags" multiple>--%>
+<%--            <%--%>
+<%--                List<Tag> allTags = (List<Tag>) request.getAttribute("tags");--%>
+<%--                List<Tag> selectedTags = (List<Tag>) request.getAttribute("selectedTags");--%>
 
-                if (allTags != null && !allTags.isEmpty()) {
-                    for (Tag tag : allTags) {
-                        boolean isSelected = false;
-                        if (selectedTags != null) {
-                            for (Tag selectedTag : selectedTags) {
-                                if (selectedTag.getId() == tag.getId()) {
-                                    isSelected = true;
-                                    break;
-                                }
-                            }
-                        }
-            %>
-            <option value="<%= tag.getId() %>" <%= isSelected ? "selected" : "" %>>
-                <%= tag.getName() %>
-            </option>
-            <%
-                }
-            } else {
-            %>
-            <option disabled>Aucun tag disponible</option>
-            <%
-                }
-            %>
-        </select>
-    </div>
+<%--                if (allTags != null && !allTags.isEmpty()) {--%>
+<%--                    for (Tag tag : allTags) {--%>
+<%--                        boolean isSelected = false;--%>
+<%--                        if (selectedTags != null) {--%>
+<%--                            for (Tag selectedTag : selectedTags) {--%>
+<%--                                if (selectedTag.getId() == tag.getId()) {--%>
+<%--                                    isSelected = true;--%>
+<%--                                    break;--%>
+<%--                                }--%>
+<%--                            }--%>
+<%--                        }--%>
+<%--            %>--%>
+<%--            <option value="<%= tag.getId() %>" <%= isSelected ? "selected" : "" %>>--%>
+<%--                <%= tag.getName() %>--%>
+<%--            </option>--%>
+<%--            <%--%>
+<%--                }--%>
+<%--            } else {--%>
+<%--            %>--%>
+<%--            <option disabled>Aucun tag disponible</option>--%>
+<%--            <%--%>
+<%--                }--%>
+<%--            %>--%>
+<%--        </select>--%>
+<%--    </div>--%>
 
-    <input type="hidden" id="selected-tags-input" name="selected_tags" value="<%
-    if(selectedTags != null && !selectedTags.isEmpty()) {
-        StringBuilder sb = new StringBuilder();
-        for(int i = 0; i < selectedTags.size(); i++) {
-            if(i > 0) sb.append(",");
-            sb.append(selectedTags.get(i).getId());
-        }
-        out.print(sb.toString());
-    }
-%>" />
+<%--    <input type="hidden" id="selected-tags-input" name="selected_tags" value="<%--%>
+<%--    if(selectedTags != null && !selectedTags.isEmpty()) {--%>
+<%--        StringBuilder sb = new StringBuilder();--%>
+<%--        for(int i = 0; i < selectedTags.size(); i++) {--%>
+<%--            if(i > 0) sb.append(",");--%>
+<%--            sb.append(selectedTags.get(i).getId());--%>
+<%--        }--%>
+<%--        out.print(sb.toString());--%>
+<%--    }--%>
+<%--%>" />--%>
 
     <button type="submit" name="action" value="update" class="btn btn-primary">
         Enregistrer les modifications

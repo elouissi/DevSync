@@ -185,7 +185,7 @@ public class TaskServlet extends HttpServlet {
             TypeStatus status = TypeStatus.valueOf(request.getParameter("status"));
             LocalDate date_debut = LocalDate.parse(request.getParameter("date_debut"));
             LocalDate date_fin = LocalDate.parse(request.getParameter("date_fin"));
-            String selectedTagIds = request.getParameter("selected_tags");
+//            String selectedTagIds = request.getParameter("selected_tags");
             int id = Integer.parseInt(request.getParameter("id"));
             Task existingTask = taskService.getById(id);
             if (existingTask != null) {
@@ -196,16 +196,20 @@ public class TaskServlet extends HttpServlet {
                 existingTask.setAssignedTo(userService.getUserById(Integer.parseInt(assigned_user_id)));
                 existingTask.setDateDebut(date_debut);
                 existingTask.setDateFin(date_fin);
-                if (selectedTagIds != null && !selectedTagIds.isEmpty()) {
-                    String[] tagIdsArray = selectedTagIds.split(",");
-                    List<Tag> selectedTags = new ArrayList<>();
-                    for (String tagId : tagIdsArray) {
-                        Tag tag = tagService.getById(Integer.parseInt(tagId));
-                        selectedTags.add(tag);
-                    }
-                    existingTask.setTags(selectedTags);
-                    taskService.updateTask(existingTask);
-                }
+                existingTask.setStatus(status);
+//                if (selectedTagIds != null && !selectedTagIds.isEmpty()) {
+//                    String[] tagIdsArray = selectedTagIds.split(",");
+//                    List<Tag> selectedTags = new ArrayList<>();
+//                    for (String tagId : tagIdsArray) {
+//                        Tag tag = tagService.getById(Integer.parseInt(tagId));
+//                        selectedTags.add(tag);
+//                    }
+//                    existingTask.setTags(selectedTags);
+//                }
+                taskService.updateTask(existingTask);
+                response.sendRedirect("tasks");
+
+
 
             }
         }

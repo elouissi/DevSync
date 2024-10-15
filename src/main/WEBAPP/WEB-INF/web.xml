@@ -54,5 +54,14 @@
         <servlet-name>RequestServlet</servlet-name>
         <url-pattern>/requests</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>StatServlet</servlet-name>
+        <servlet-class>org.project.controller.StatServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>StatServlet</servlet-name>
+        <url-pattern>/stats</url-pattern>
+    </servlet-mapping>
+
 
 </web-app>

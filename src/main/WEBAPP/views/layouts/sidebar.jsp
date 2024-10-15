@@ -14,6 +14,9 @@
     <li class="nav-item">
       <a class="nav-link" href="requests">Requests</a>
     </li>
+    <li class="nav-item">
+      <a class="nav-link" href="stats">Statistiques</a>
+    </li>
     <%}%>
   </ul>
 </div>
