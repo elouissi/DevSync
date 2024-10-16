@@ -350,7 +350,6 @@
                 updateSelectedTagsInput();
             }
 
-            // Réinitialiser la sélection du dropdown
             tagsSelect.selectedIndex = 0;
         });
 

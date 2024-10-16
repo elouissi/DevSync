@@ -19,17 +19,16 @@ public class RequestScheduler {
     private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
     private final RequestService requestService = new RequestService();
     private final UserService userService = new UserService();
-    private final  TokenScheduler tokenScheduler = new TokenScheduler();
 
 
     public void startScheduler() {
         scheduler.scheduleAtFixedRate(this::checkAndUpdateRequest, 0, 1, TimeUnit.MINUTES);
     }
-    public boolean isRequestOlderThan12Hours(Request request){
+    public boolean isRequestOlderThanHours(Request request,int hours){
         LocalDateTime created_at = request.getCreated_at().atStartOfDay();
         LocalDateTime now = LocalDateTime.now();
         long hoursDifference = ChronoUnit.HOURS.between(created_at, now);
-        return hoursDifference > 12;
+        return hoursDifference > hours;
 
     }
 
@@ -37,10 +36,16 @@ public class RequestScheduler {
         try {
             List<Request> requests = requestService.getALlRequests();
             for (Request request : requests) {
-                if (isRequestOlderThan12Hours(request) && request.getStatus() == TypeRequest.EN_ATTENT) {
+                if (isRequestOlderThanHours(request, 12) && request.getStatus() == TypeRequest.EN_ATTENT) {
                     request.setStatus(TypeRequest.EXPIRE);
                     requestService.update(request);
-                    tokenScheduler.startScheduler(request);
+                }
+                if (isRequestOlderThanHours(request, 36) && request.getStatus() == TypeRequest.EXPIRE) {
+                    User user = request.getUser();
+                    user.setJeton_Monsuel(user.getJeton_Monsuel() * 2);
+                    userService.updateUser(user);
+
+                    System.out.println("Jeton de l'utilisateur mis à jour avec succès.");
 
                 }
             }

@@ -16,7 +16,7 @@ public class TaskScheduler {
     private final TaskService taskService = new TaskService();
 
     public void startScheduler() {
-        scheduler.scheduleAtFixedRate(this::checkAndUpdateTasks, 0, 1, TimeUnit.SECONDS);
+        scheduler.scheduleAtFixedRate(this::checkAndUpdateTasks, 0, 1, TimeUnit.MINUTES);
     }
 
     private void checkAndUpdateTasks() {
