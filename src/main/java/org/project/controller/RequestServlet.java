@@ -59,35 +59,59 @@ public class RequestServlet extends HttpServlet {
 
             User currentUser = (User) session.getAttribute("currentUser");
             int taskId = Integer.parseInt(request.getParameter("taskId"));
+            Task task = taskService.getById(taskId);
+            if (task == null) {
+                throw new ServletException("Task not found");
+            }
 
             try {
-                if (currentUser.getJeton_Monsuel() > 0 && !requestService.hasExistingRequest(taskId, currentUser.getId())) {
-                    Task task = taskService.getById(taskId);
-                    if (task == null) {
-                        throw new ServletException("Task not found");
+                if (!requestService.hasExistingRequest(taskId, currentUser.getId())) {
+
+                    // Case 1: Task already requested
+                if (task.isRequested()) {
+                    // Check if the user has an existing request for this task
+                        Request newRequest = new Request();
+                        newRequest.setStatus(TypeRequest.EN_ATTENT);
+                        newRequest.setTask(task);
+                        newRequest.setUser(currentUser);
+                        newRequest.setCreated_at(LocalDate.now());
+
+                        // Save the new request
+                        requestService.createRequest(newRequest);
+                        userService.updateUser(currentUser);
+
+                        session.setAttribute("message", "Request created successfully");
+
+                }
+                // Case 2: Task not yet requested, check user's tokens
+                else {
+                    if (currentUser.getJeton_Monsuel() != 0) {
+                        Request newRequest = new Request();
+                        newRequest.setStatus(TypeRequest.EN_ATTENT);
+                        newRequest.setTask(task);
+                        newRequest.setUser(currentUser);
+                        newRequest.setCreated_at(LocalDate.now());
+
+                        // Create new request and deduct one token
+                        requestService.createRequest(newRequest);
+                        currentUser.setJeton_Monsuel(currentUser.getJeton_Monsuel() - 1);
+                        userService.updateUser(currentUser);
+
+                        session.setAttribute("message", "Request created successfully. One token deducted.");
+                    } else {
+                        // User has no tokens left
+                        session.setAttribute("error", "Unable to create request. You don't have enough tokens.");
                     }
-                    Request newRequest = new Request();
-                    newRequest.setStatus(TypeRequest.EN_ATTENT);
-                    newRequest.setTask(task);
-                    newRequest.setUser(currentUser);
-                    newRequest.setCreated_at(LocalDate.now());
-
-                    requestService.createRequest(newRequest);
-
-                    currentUser.setJeton_Monsuel(currentUser.getJeton_Monsuel() - 1);
-                    userService.updateUser(currentUser);
-
-                    session.setAttribute("message", "Request created successfully");
+                }
                 } else {
-                    session.setAttribute("error", "Unable to create request. Check your tokens or existing requests.");
+                    session.setAttribute("error", "Unable to create request. You already have an existing request.");
                 }
             } catch (Exception e) {
                 e.printStackTrace();
                 session.setAttribute("error", "Error creating request: " + e.getMessage());
                 response.sendRedirect("tasks");
                 return;
-
-        }
+            }
 
             response.sendRedirect("tasks");
         }
@@ -118,9 +142,11 @@ public class RequestServlet extends HttpServlet {
                 Request req = requestService.getById(requestId);
                 req.setStatus(TypeRequest.ACCEPTE);
                 requestService.update(req);
+                
 
                 Task task = taskService.getById(taskId);
                 task.setAssignedTo(userService.getUserById(newUserId));
+                task.setRequested(true);
                 taskService.updateTask(task);
 
                 response.sendRedirect("requests");

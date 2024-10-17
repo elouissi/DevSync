@@ -2,6 +2,8 @@
 <%@ page import="org.project.entite.Request" %>
 <%@ page import="java.util.List" %>
 <%@ page import="org.project.Enum.TypeRequest" %>
+<%@ page import="org.project.entite.User" %>
+<%@ page import="java.util.stream.Collectors" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <html lang="fr">
@@ -50,8 +52,11 @@
       </thead>
       <tbody>
       <%
+        User user = (User) session.getAttribute("currentUser");
+
         List<Request> requests = (List<Request>) request.getAttribute("requests");
-        for (Request requestB : requests) {
+        List<Request> requestList = requests.stream().filter(r-> r.getTask().getCreatedBy().getId() ==  user.getId()).collect(Collectors.toList());
+        for (Request requestB : requestList) {
       %>
       <tr>
         <td><%= requestB.getId() %></td>

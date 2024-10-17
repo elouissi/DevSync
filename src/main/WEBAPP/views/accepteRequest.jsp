@@ -6,6 +6,7 @@
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.stream.Collectors" %>
 <%@ page import="java.util.ArrayList" %>
+<%@ page import="org.project.Enum.TypeRole" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
 <head>
@@ -38,7 +39,7 @@
         Task finalTask = task;
         users = userService.getAllUsers()
                 .stream()
-                .filter(user -> user.getId() != finalTask.getAssignedTo().getId())
+                .filter(user -> (user.getId() != finalTask.getAssignedTo().getId()) && user.getRole() == TypeRole.USER )
                 .collect(Collectors.toList());
       }
     } catch (Exception e) {

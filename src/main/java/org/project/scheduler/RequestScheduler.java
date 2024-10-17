@@ -36,10 +36,10 @@ public class RequestScheduler {
         try {
             List<Request> requests = requestService.getALlRequests();
             for (Request request : requests) {
-                if (isRequestOlderThanHours(request, 12) && request.getStatus() == TypeRequest.EN_ATTENT) {
-                    request.setStatus(TypeRequest.EXPIRE);
-                    requestService.update(request);
-                }
+//                if (isRequestOlderThanHours(request, 12) && request.getStatus() == TypeRequest.EN_ATTENT) {
+//                    request.setStatus(TypeRequest.EXPIRE);
+//                    requestService.update(request);
+//                }
                 if (isRequestOlderThanHours(request, 36) && request.getStatus() == TypeRequest.EXPIRE) {
                     User user = request.getUser();
                     user.setJeton_Monsuel(user.getJeton_Monsuel() * 2);

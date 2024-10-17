@@ -40,6 +40,9 @@ public class Task {
     @Column(name = "date_fin")
     private LocalDate dateFin;
 
+    @Column(name = "isRequested")
+    private boolean isRequested = false;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "task_tags",

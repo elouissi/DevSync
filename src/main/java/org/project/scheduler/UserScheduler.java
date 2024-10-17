@@ -17,7 +17,7 @@ public class UserScheduler {
     private final UserService userService = new UserService();
 
     public void startScheduler() {
-        scheduler.scheduleAtFixedRate(this::checkAndUpdateUsers, 0, 1, TimeUnit.DAYS);
+        scheduler.scheduleAtFixedRate(this::checkAndUpdateUsers, 0, 60, TimeUnit.HOURS);
     }
 
     private void checkAndUpdateUsers() {

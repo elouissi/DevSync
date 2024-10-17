@@ -200,7 +200,16 @@
             </tr>
             <%
                     }else { %>
-            <td>vous avez pas le droit</td>
+
+
+            <td>
+                <form action="tasks" method="get" class="d-inline">
+                    <input type="hidden" name="idS" value="<%= task.getId() %>"/>
+                    <button type="submit" class="btn btn-primary btn-sm">
+                        Modifier
+                    </button>
+                </form>
+            </td>
             <%
 
                     }
@@ -230,12 +239,11 @@
                         <label for="description">Description</label>
                         <input type="text" name="description" class="form-control" id="description" placeholder="Description" required>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group " style="display: none">
                         <label for="status">Status</label>
                         <select name="status" class="form-control" id="status" required>
-                            <option value="en_attend">En attente</option>
-                            <option value="en_cours">En cours</option>
-                            <option value="termine">Complétée</option>
+                            <option selected value="en_attend">En attente</option>
+
                         </select>
                     </div>
                     <div class="form-group">
@@ -253,8 +261,12 @@
                         <select name="assigned_user_id" class="form-control" id="assigned_user">
                             <option value="">Non assignée</option>
                             <%
+                                User user1 = (User) session.getAttribute("currentUser");
                                 List<User> users = (List<User>) request.getAttribute("users");
-                                for (User user2 : users) {
+                                List<User> userList = users.stream()
+                                        .filter(u -> u.getRole() == TypeRole.USER || u.getId() == user.getId())
+                                        .collect(Collectors.toList());
+                                for (User user2 : userList) {
                             %>
                             <option value="<%= user2.getId() %>"><%= user2.getName() %></option>
                             <%

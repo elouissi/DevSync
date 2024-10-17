@@ -44,6 +44,7 @@ public class TaskServlet extends HttpServlet {
         }
 
         String idP = request.getParameter("id");
+        String idS = request.getParameter("idS");
 
         List<User> users = userService.getAllUsers();
         request.setAttribute("users", users);
@@ -61,6 +62,21 @@ public class TaskServlet extends HttpServlet {
             } else {
                 response.sendRedirect("tasks");
             }
+        } else if (idS != null) {
+            System.out.println("voila l'id reccupere:"+idS);
+            int id = Integer.parseInt(idS);
+            Task task = taskService.getById(id);
+            System.out.println("voila la tache:"+task);
+            if (task != null) {
+                request.setAttribute("id", id);
+                request.setAttribute("task", task);
+                RequestDispatcher dispatcher = request.getRequestDispatcher("/views/editStatus.jsp");
+                dispatcher.forward(request, response);
+            } else {
+                response.sendRedirect("tasks");
+            }
+
+
         } else {
             TaskScheduler scheduler = new TaskScheduler();
             scheduler.startScheduler();
@@ -212,6 +228,25 @@ public class TaskServlet extends HttpServlet {
 
 
             }
+        }
+        else if ("update_status".equals(action)) {
+
+            TypeStatus status = TypeStatus.valueOf(request.getParameter("status"));
+            int id = Integer.parseInt(request.getParameter("id"));
+
+            Task existingTask = taskService.getById(id);
+            if (existingTask != null) {
+                existingTask.setStatus(status);
+                taskService.updateTask(existingTask);
+                response.sendRedirect("tasks");
+
+
+
+            }
+
+
+
+
         }
 
 
