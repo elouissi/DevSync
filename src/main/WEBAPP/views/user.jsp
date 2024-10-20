@@ -69,12 +69,12 @@
                 <%}%>
 
                 <td>
-                    <form action="users" method="post" class="d-inline">
-                        <input type="hidden" name="id" value="<%= user.getId() %>"/>
-                        <button type="submit" name="action" value="delete" class="btn btn-danger btn-sm">
-                            Supprimer
-                        </button>
-                    </form>
+<%--                    <form action="users" method="post" class="d-inline">--%>
+<%--                        <input type="hidden" name="id" value="<%= user.getId() %>"/>--%>
+<%--                        <button type="submit" name="action" value="delete" class="btn btn-danger btn-sm">--%>
+<%--                            Supprimer--%>
+<%--                        </button>--%>
+<%--                    </form>--%>
 
                     <form action="users" method="get" class="d-inline">
                         <input type="hidden" name="id" value="<%= user.getId() %>"/>
@@ -122,7 +122,11 @@
                     </div>
                     <div class="form-group">
                         <label for="role">Role</label>
-                        <input type="text" name="role" class="form-control" id="role" placeholder="Role" required>
+                        <select name="role" class="form-control" id="role" required>
+                            <option value="MANAGER">Manager</option>
+                            <option value="USER">User</option>
+
+                        </select>
                     </div>
                     <button type="submit" name="action" value="create" class="btn btn-success">Ajouter</button>
                 </form>

@@ -39,7 +39,7 @@
         Task finalTask = task;
         users = userService.getAllUsers()
                 .stream()
-                .filter(user -> (user.getId() != finalTask.getAssignedTo().getId()) && user.getRole() == TypeRole.USER )
+                .filter(user -> ((user.getId() != finalTask.getAssignedTo().getId()) && user.getRole() == TypeRole.USER)||user.getId()== finalTask.getCreatedBy().getId() )
                 .collect(Collectors.toList());
       }
     } catch (Exception e) {

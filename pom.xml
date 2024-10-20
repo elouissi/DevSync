@@ -73,6 +73,32 @@
             <version>5.10.1</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.9.3</version> <!-- Vérifiez la dernière version sur Maven Central -->
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>5.9.3</version> <!-- Vérifiez la dernière version sur Maven Central -->
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Dépendance pour Mockito -->
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>5.5.0</version> <!-- Vérifiez la dernière version sur Maven Central -->
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse</groupId>
+            <artifactId>yasson</artifactId>
+            <version>3.0.3</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>

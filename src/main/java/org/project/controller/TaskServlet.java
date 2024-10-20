@@ -160,7 +160,7 @@ public class TaskServlet extends HttpServlet {
                 task.setDateDebut(dateDebut);
                 task.setDateFin(dateFin);
                 task.setTags(selectedTags);
-
+                System.out.println("voila la task"+task);
                 taskService.createTask(task);
                 response.sendRedirect("tasks");
             } catch (Exception e) {

@@ -1,12 +1,7 @@
 package org.project.entite;
 
+import jakarta.persistence.*;
 import lombok.Data;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 import org.project.Enum.TypeRole;
 
 @Entity
@@ -25,6 +20,7 @@ public class User {
     private String email;
     @Column(name = "mot_de_pass", nullable = false)
     private String mot_de_pass;
+    @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
     private TypeRole role;
 
